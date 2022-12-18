@@ -4,12 +4,15 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "qunit",
     "start": "node src/index.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "gpu.js": "^2.16.0"
+  },
+  "devDependencies": {
+    "qunit": "^2.19.3"
   }
 }
