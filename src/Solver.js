@@ -1,22 +1,13 @@
 
 class Solver {
-    constructor(gpu, N, x0, x1) {
+    constructor(gpu, N, x0, x1, initialConditionFunction) {
         this.N = N
         this.x0 = x0
         this.x1 = x1
         this.gpu = gpu
 
         this.initialKernel = gpu
-            .createKernel(function () {
-                const xIndex = this.thread.x;
-                const yIndex = this.thread.y;
-                const N = this.constants.SIZE;
-                const x0 = this.constants.X0;
-                const x1 = this.constants.X1;
-                const x = xIndex / (N - 1) * (x1 - x0)
-                const y = yIndex / (N - 1) * (x1 - x0)
-                return Math.sin(x * Math.PI / 2) * Math.sin(y * Math.PI / 2)
-            })
+            .createKernel(initialConditionFunction)
             .setOutput([this.N, this.N])
             .setPipeline(true)
             .setConstants({
