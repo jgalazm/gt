@@ -11,7 +11,9 @@
   "license": "ISC",
   "dependencies": {
     "gl": "^6.0.2",
-    "gpu.js": "^2.16.0"
+    "gpu.js": "^2.16.0",
+    "ndarray": "^1.0.19",
+    "save-pixels": "^2.3.6"
   },
   "devDependencies": {
     "qunit": "^2.19.3"

@@ -21,7 +21,7 @@ const initialKernel = gpu
         const x1 = this.constants.X1;
         const x = x_index / (N - 1) * (x1 - x0)
         const y = y_index / (N - 1) * (x1 - x0)
-        return Math.sin(this.thread.x * Math.PI / 2) * Math.sin(this.thread.y * Math.PI / 2)
+        return Math.sin(x * Math.PI / 2) * Math.sin(y * Math.PI / 2)
     })
     .setOutput([512, 512])
     .setPipeline(true)
@@ -30,6 +30,7 @@ const initialKernel = gpu
         X0: 0,
         X1: 1
     });
+
 const solverKernel = gpu
     .createKernel(function (texture) {
         const x = this.thread.x;
@@ -63,7 +64,8 @@ const solverKernel = gpu
 const render = gpu
     .createKernel(function (texture) {
         const val = texture[this.thread.y][this.thread.x];
-        this.color(val / this.constants.SIZE, 0, 0, 1);
+        // this.color(val / this.constants.SIZE, 1, 1, 1);
+        this.color(val,0,0,1);
     })
     .setOutput([N, N])
     .setGraphical(true)
@@ -73,7 +75,11 @@ const render = gpu
 
 
 const initialResult = initialKernel();
+render(initialResult);
+const pixels = render.getPixels();
+var savePixels = require("save-pixels")
+var ndarray = require("ndarray");
+const reshaped = ndarray(pixels, [N,N,4]);
+savePixels(reshaped, "png").pipe(process.stdout)
+
 const firstStepResult = solverKernel(initialResult);
-const initialRender = render(initialResult);
-const firstStepRender = render(firstStepResult);
-// console.log(c);
