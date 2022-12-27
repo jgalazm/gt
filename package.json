@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "gl": "^6.0.2",
     "gpu.js": "^2.16.0"
   },
   "devDependencies": {
