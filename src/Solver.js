@@ -8,13 +8,13 @@ class Solver {
 
         this.initialKernel = gpu
             .createKernel(function () {
-                const x_index = this.thread.x;
-                const y_index = this.thread.y;
+                const xIndex = this.thread.x;
+                const yIndex = this.thread.y;
                 const N = this.constants.SIZE;
                 const x0 = this.constants.X0;
                 const x1 = this.constants.X1;
-                const x = x_index / (N - 1) * (x1 - x0)
-                const y = y_index / (N - 1) * (x1 - x0)
+                const x = xIndex / (N - 1) * (x1 - x0)
+                const y = yIndex / (N - 1) * (x1 - x0)
                 return Math.sin(x * Math.PI / 2) * Math.sin(y * Math.PI / 2)
             })
             .setOutput([this.N, this.N])

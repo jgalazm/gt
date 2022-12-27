@@ -1,8 +1,10 @@
 const { GPU } = require("gpu.js");
 const { Solver } = require("./Solver.js")
-function myMod(x, y) {
-    return y * (x / y - Math.floor(x / y));
-}
+// function myMod(x, y) {
+//     return y * (x / y - Math.floor(x / y));
+// }
+const {myMod} = require("./utils");
+console.log(myMod);
 const gpu = new GPU({
     mode: "gpu",
     functions: [myMod]
@@ -10,7 +12,6 @@ const gpu = new GPU({
 
 
 const N = 512;
-const SIZE = N;
 const solver = new Solver(gpu, N, 0.0, 1.0);
 
 
