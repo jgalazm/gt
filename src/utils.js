@@ -3,4 +3,7 @@ function myMod(x, y) {
 }
 
 
-module.exports = {myMod};
+const infNormTwoD = (matrix) =>
+  Math.max(...matrix.map((row) => Math.max(...row.map((v) => Math.abs(v)))));
+
+module.exports = {myMod, infNormTwoD};
