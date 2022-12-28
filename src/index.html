@@ -11,6 +11,8 @@
 
   const SIZE = 500;
   const dt = 0.2 * 1/SIZE/SIZE;
+  const nu = 1.0;
+
   const initialConditionFunction = function () {
     const x = this.thread.x;
     const y = this.thread.y;
@@ -24,7 +26,7 @@
   };
 
 
-  const solver = new htmlSolver.Solver(gpu, SIZE, dt, initialConditionFunction);
+  const solver = new htmlSolver.Solver(gpu, SIZE, dt,nu, initialConditionFunction);
 
   const iterate = (result0) => {
     const result1 = solver.kernel1(result0);

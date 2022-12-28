@@ -1,11 +1,12 @@
 class Solver {
-    constructor(gpu, SIZE, dt, initialConditionFunction) {
+    constructor(gpu, SIZE, dt, nu, initialConditionFunction) {
       this.gpu = gpu;
       this.SIZE = SIZE;
       this.dt = dt;
       this.CONSTANTS = {
         SIZE: SIZE,
-        DT: dt
+        DT: dt,
+        NU: nu
       }
       this.initialKernel = gpu
         .createKernel(initialConditionFunction)
@@ -18,6 +19,7 @@ class Solver {
           const y = this.thread.y;
           const SIZE = this.constants.SIZE;
           const dx = 1 / this.constants.SIZE;
+          const nu = this.constants.NU;
         //   const dt = 0.2 * dx * dx;
           const dt = this.constants.DT;
           const boundary = SIZE;
@@ -33,8 +35,8 @@ class Solver {
 
           return (
             uij +
-            (dt / dx / dx) * (uijm + uijp - 2 * uij) +
-            (dt / dx / dx) * (uimj + uipj - 2 * uij)
+            nu * (dt / dx / dx) * (uijm + uijp - 2 * uij) +
+            nu * (dt / dx / dx) * (uimj + uipj - 2 * uij)
           );
         })
         .setOutput([SIZE, SIZE])
