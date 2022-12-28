@@ -11,17 +11,25 @@
 
   const SIZE = 500;
 
-  const solver = new htmlSolver.Solver(gpu, SIZE);
+  const initialConditionFunction = function () {
+    const x = this.thread.x;
+    const y = this.thread.y;
+    const SIZE = this.constants.SIZE;
+
+    if (Math.abs(x - SIZE / 2) < 50 && Math.abs(y - SIZE / 2) < 50) {
+      return 500;
+    }
+
+    return 0;
+  };
+  
+  const solver = new htmlSolver.Solver(gpu, SIZE, initialConditionFunction);
 
   const iterate = (result0) => {
-    // console.log('result0', result0.toArray().map(v => [...v]))
-
     const result1 = solver.kernel1(result0);
-    // console.log('result1', result1.toArray().map(v => [...v]))
     result0.delete();
 
     const result2 = solver.kernel2(result1);
-    // console.log('result2', result2.toArray().map(v => [...v]))
     result1.delete();
 
     solver.render(result2);

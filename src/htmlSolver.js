@@ -1,19 +1,9 @@
 class Solver {
-    constructor(gpu, SIZE,) {
+    constructor(gpu, SIZE, initialConditionFunction) {
       this.gpu = gpu;
       this.SIZE = SIZE;
       this.initialKernel = gpu
-        .createKernel(function () {
-          const x = this.thread.x;
-          const y = this.thread.y;
-          const SIZE = this.constants.SIZE;
-
-          if (Math.abs(x - SIZE / 2) < 50 && Math.abs(y - SIZE / 2) < 50) {
-            return 500;
-          }
-
-          return 0;
-        })
+        .createKernel(initialConditionFunction)
         .setOutput([SIZE, SIZE])
         .setPipeline(true)
         .setConstants({
