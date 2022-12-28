@@ -1,81 +1,9 @@
 <script src="https://unpkg.com/gpu.js@latest/dist/gpu-browser.min.js
 "></script>
-<!-- <script src="/src/Solver.js"></script> -->
+<!-- <script type="module" src="/src/htmlSolver.js"></script>/ -->
 <script type="module">
-
-
-  class Solver {
-    constructor(gpu, SIZE,) {
-      this.gpu = gpu;
-      this.SIZE = SIZE;
-      this.initialKernel = gpu
-        .createKernel(function () {
-          const x = this.thread.x;
-          const y = this.thread.y;
-          const SIZE = this.constants.SIZE;
-
-          if (Math.abs(x - SIZE / 2) < 50 && Math.abs(y - SIZE / 2) < 50) {
-            return 500;
-          }
-
-          return 0;
-        })
-        .setOutput([SIZE, SIZE])
-        .setPipeline(true)
-        .setConstants({
-          SIZE
-        });
-      this.kernel1 = gpu
-        .createKernel(function (texture) {
-          const x = this.thread.x;
-          const y = this.thread.y;
-          const SIZE = this.constants.SIZE;
-          const dx = 1 / this.constants.SIZE;
-          const dt = 0.2 * dx * dx;
-          const boundary = SIZE;
-          if (this.thread.x === 0) return boundary;
-          if (this.thread.y === 0) return boundary;
-          if (this.thread.x === SIZE - 1) return boundary;
-          if (this.thread.y === SIZE - 1) return boundary;
-          const uij = texture[this.thread.y][this.thread.x];
-          const uimj = texture[this.thread.y][this.thread.x - 1];
-          const uipj = texture[this.thread.y][this.thread.x + 1];
-          const uijm = texture[this.thread.y - 1][this.thread.x];
-          const uijp = texture[this.thread.y + 1][this.thread.x];
-
-          return (
-            uij +
-            (dt / dx / dx) * (uijm + uijp - 2 * uij) +
-            (dt / dx / dx) * (uimj + uipj - 2 * uij)
-          );
-        })
-        .setOutput([SIZE, SIZE])
-        .setPipeline(true)
-        .setImmutable(true)
-        .setConstants({
-          SIZE
-        });
-      this.kernel2 = gpu
-        .createKernel(function (texture) {
-          return texture[this.thread.y][this.thread.x];
-        })
-        .setOutput([SIZE, SIZE])
-        .setPipeline(true)
-        .setImmutable(true);
-
-      this.render = gpu
-        .createKernel(function (texture) {
-          const val = texture[this.thread.y][this.thread.x];
-          this.color(val / this.constants.SIZE, 0, 0, 1);
-        })
-        .setOutput([SIZE, SIZE])
-        .setGraphical(true)
-        .setConstants({
-          SIZE
-        });
-      document.body.appendChild(this.render.canvas);
-    }
-  }
+  import * as htmlSolver from "/src/htmlSolver.js";
+  window.htmlSolver = htmlSolver;
 
   const gpu = new GPU({
     mode: "gpu",
@@ -83,7 +11,7 @@
 
   const SIZE = 500;
 
-  const solver = new Solver(gpu, SIZE);
+  const solver = new htmlSolver.Solver(gpu, SIZE);
 
   const iterate = (result0) => {
     // console.log('result0', result0.toArray().map(v => [...v]))
@@ -104,7 +32,7 @@
   let n = 0;
   const animate = () => {
     n++;
-    console.log(n);
+    // console.log(n);
     result = iterate(result);
     requestAnimationFrame(animate);
   };
