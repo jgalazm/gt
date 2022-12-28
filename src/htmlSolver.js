@@ -3,14 +3,15 @@ class Solver {
       this.gpu = gpu;
       this.SIZE = SIZE;
       this.dt = dt;
+      this.CONSTANTS = {
+        SIZE: SIZE,
+        DT: dt
+      }
       this.initialKernel = gpu
         .createKernel(initialConditionFunction)
         .setOutput([SIZE, SIZE])
         .setPipeline(true)
-        .setConstants({
-          SIZE,
-          DT: this.dt
-        });
+        .setConstants(this.CONSTANTS);
       this.kernel1 = gpu
         .createKernel(function (texture) {
           const x = this.thread.x;
@@ -39,10 +40,7 @@ class Solver {
         .setOutput([SIZE, SIZE])
         .setPipeline(true)
         .setImmutable(true)
-        .setConstants({
-          SIZE,
-          DT: this.dt
-        });
+        .setConstants(this.CONSTANTS);
       this.kernel2 = gpu
         .createKernel(function (texture) {
           return texture[this.thread.y][this.thread.x];
@@ -58,10 +56,7 @@ class Solver {
         })
         .setOutput([SIZE, SIZE])
         .setGraphical(true)
-        .setConstants({
-          SIZE,
-          DT: this.dt
-        });
+        .setConstants(this.CONSTANTS);
       document.body.appendChild(this.render.canvas);
     }
   }
