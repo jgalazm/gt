@@ -10,7 +10,7 @@
   });
 
   const SIZE = 500;
-
+  const dt = 0.2 * 1/SIZE/SIZE;
   const initialConditionFunction = function () {
     const x = this.thread.x;
     const y = this.thread.y;
@@ -22,8 +22,9 @@
 
     return 0;
   };
-  
-  const solver = new htmlSolver.Solver(gpu, SIZE, initialConditionFunction);
+
+
+  const solver = new htmlSolver.Solver(gpu, SIZE, dt, initialConditionFunction);
 
   const iterate = (result0) => {
     const result1 = solver.kernel1(result0);
