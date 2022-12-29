@@ -43,16 +43,17 @@
   
     const solver = new htmlSolver.Solver(gpu, SIZE, dt,nu, x0, x1, initialConditionFunction);
   
-    const iterate = (result0) => {
-      const result1 = solver.kernel1(result0);
-      result0.delete();
+    document.body.appendChild(solver.render.canvas);
+    // const iterate = (result0) => {
+    //   const result1 = solver.kernel1(result0);
+    //   result0.delete();
   
-      const result2 = solver.kernel2(result1);
-      result1.delete();
+    //   const result2 = solver.kernel2(result1);
+    //   result1.delete();
   
-      solver.render(result2);
-      return result2;
-    };
+    //   solver.render(result2);
+    //   return result2;
+    // };
   
     let ic = solver.initialKernel();
     let onestep = solver.kernel1(ic);

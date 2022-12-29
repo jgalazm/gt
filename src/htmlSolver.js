@@ -69,7 +69,6 @@ class Solver {
         .setGraphical(true)
         .setConstants(this.CONSTANTS)
         .setTactic(tactic);
-      document.body.appendChild(this.render.canvas);
     }
   }
 

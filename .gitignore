@@ -1,3 +1,7 @@
+#built js files (with babel)
+lib
+**/.DS_Store
+
 # Logs
 logs
 *.log

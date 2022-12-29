@@ -4,8 +4,9 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "test": "qunit",
-    "start": "node src/index.js"
+    "test": "NODE_OPTIONS='--inspect' qunit",
+    "start": "node src/index.js",
+    "build": "npx babel src/*.js --out-dir lib"
   },
   "author": "",
   "license": "ISC",
@@ -16,6 +17,9 @@
     "save-pixels": "^2.3.6"
   },
   "devDependencies": {
+    "@babel/cli": "^7.20.7",
+    "@babel/core": "^7.20.7",
+    "@babel/preset-env": "^7.20.2",
     "qunit": "^2.19.3"
   }
 }
