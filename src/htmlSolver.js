@@ -25,7 +25,7 @@ class Solver {
           const x = this.thread.x;
           const y = this.thread.y;
           const SIZE = this.constants.SIZE;
-          const dx = 1 / this.constants.SIZE;
+          const dx = 1 / (this.constants.SIZE-1);
           const nu = this.constants.NU;
         //   const dt = 0.2 * dx * dx;
           const dt = this.constants.DT;
