@@ -28,4 +28,4 @@ const argMax = arr =>  arr.reduce((maxIndex, row, i) => {
     return maxIndex;
   }, [0, 0]);
   
-  export {myMod, infNormTwoD, findMin, argMin, findMax, argMax};
+  export {myMod, findMin, argMin, findMax, argMax};

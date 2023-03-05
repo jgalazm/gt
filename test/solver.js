@@ -8,7 +8,7 @@ const fs = require('fs');
 QUnit.module("solver");
 
 
-QUnit.test.skip("Initialize solver correctly", (assert) => {
+QUnit.test("Initialize solver correctly", (assert) => {
   // arrange
   const gpu = new GPU({
     mode: "gpu",
@@ -31,11 +31,11 @@ QUnit.test.skip("Initialize solver correctly", (assert) => {
     return Math.sin((x * Math.PI) / 2) * Math.sin((y * Math.PI) / 2);
   };
 
-  // act
-  const solver = new Solver(gpu, N, x0, x1, dt, nu, initialConditionFunction);
+  // act: compute the initial condtion
+  const solver = new Solver(gpu, N, dt, nu, x0, x1, initialConditionFunction);
   const result = solver.initialKernel();
 
-  // assert
+  // assert: it should be 10^-5 (single precision) close 
   result.toArray().forEach((row, yIndex) =>
     row.forEach((val, xIndex) => {
       const x = (xIndex / (N - 1)) * (x1 - x0);
@@ -50,13 +50,12 @@ QUnit.test.skip("Initialize solver correctly", (assert) => {
   );
 });
 
-QUnit.test("Convergence rate of one step", (assert) => {
+QUnit.test("The convergence rate of one step should be 4 and degrade with single precision", (assert) => {
   // arrange
   const gpu = new GPU({
     mode: "gpu",
     functions: [myMod],
   });
-
 
   // because of 1/dx^2 being an unstable operation,
   // which is really notorious on single precision, 
@@ -90,17 +89,35 @@ QUnit.test("Convergence rate of one step", (assert) => {
 
   const initialConditions = solvers.map(solver => solver.initialKernel());
 
-  const firstStepResults = solvers.map((solver, index) => solver.kernel1(initialConditions[index]))
+  const  firstStepResults = solvers.map((solver, index) => solver.kernel1(initialConditions[index]))
     .map(s=>[...s.toArray()])
     .map(s=>s.map(r=>[...r]))
-  assert.equal(1, 1)
 
   const mins = firstStepResults.map(r=>findMin(r));
   const maxs = firstStepResults.map(r=>findMax(r));
+  const linfs2 = firstStepResults.map(r=>r.map(row=>row.map(v=>Math.abs(v)))).map(r=>findMax(r));
   const linfs = mins.map((min,i)=> Math.max(Math.abs(min), Math.abs(maxs[i])));
   const ratios = linfs.slice(0,-1).map((val,index)=>val/linfs[index+1]);
-  const mean = ratios.reduce((mean,val)=>mean + val/(linfs.length-1),0);
-  assert.true(Math.abs(mean-2)<0.02, `Got ${mean} instead of 2+-0.02, and ratios=${ratios}`)
+  // const mean = ratios.reduce((mean,val)=>mean + val/(linfs.length-1),0);
+  // console.log(firstStepResults"meshes", meshes);
+  // console.log("ratios", ratios);
+  // console.log("mins", mins);
+  // console.log("maxs", maxs);
+  // console.log("linfs2", linfs2)
+  // console.log("linfs2", linfs)
+  
+  
+  // var file = fs.createWriteStream('array.txt');
+  // file.on('error', function(err) { /* error handling */ });
+  // firstStepResults[0].forEach(function(v) { file.write(v.join(', ') + '\n'); });
+  // file.end();
+  
+  assert.true(ratios[0]>4.0);
+  assert.true(ratios[1]>4.0);
+  assert.true(ratios[2]>3.58);
+  assert.true(ratios[0]>0.7);
+  assert.true(ratios[0]>0.2);
+
   // with second order scheme I should be getting mean=4, but ..oh well..
   // but ill settle for this 
 
